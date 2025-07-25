@@ -1,8 +1,21 @@
+// src/App.jsx
+import { useState } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import Layout from "./layout/Layout";
+import AppRoutes from "./routes/Router";
+import { ThemeProvider } from "./ThemeContext"; // if you have one
+
 function App() {
+  const [isOpen, setIsOpen] = useState(true); // ✅ add this line
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-      <h1 className="text-4xl font-bold">Tupae App Coming Soon 🚀</h1>
-    </div>
+    <ThemeProvider>
+      <Router>
+        <Layout isOpen={isOpen} setIsOpen={setIsOpen}>
+          <AppRoutes />
+        </Layout>
+      </Router>
+    </ThemeProvider>
   );
 }
 
