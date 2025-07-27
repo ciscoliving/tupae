@@ -1,4 +1,5 @@
 // src/components/Sidebar.jsx
+
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -14,6 +15,7 @@ import {
   MdLightMode,
   MdDarkMode,
   MdSwitchAccount,
+  MdPerson,
 } from "react-icons/md";
 
 const mockBrands = ["Sixtus Group", "HomeFront Realty", "GTA", "Impacto"];
@@ -30,42 +32,32 @@ function Sidebar({ isOpen, setIsOpen }) {
   const currentPath = location.pathname;
   const didInit = useRef(false);
 
-  // Load from localStorage on first mount
   useEffect(() => {
     if (!didInit.current) {
       const savedSidebar = localStorage.getItem("sidebarOpen");
-      if (savedSidebar !== null) {
-        setIsOpen(savedSidebar === "true");
-      }
+      if (savedSidebar !== null) setIsOpen(savedSidebar === "true");
 
       const savedTheme = localStorage.getItem("theme");
-      if (savedTheme) {
-        setTheme(savedTheme);
-      }
+      if (savedTheme) setTheme(savedTheme);
 
       const savedBrand = localStorage.getItem("selectedBrand");
-      if (savedBrand) {
-        setSelectedBrand(savedBrand);
-      }
+      if (savedBrand) setSelectedBrand(savedBrand);
 
       didInit.current = true;
     }
   }, [setIsOpen]);
 
-  // Persist sidebar state
   useEffect(() => {
     if (didInit.current) {
       localStorage.setItem("sidebarOpen", isOpen);
     }
   }, [isOpen]);
 
-  // Persist and apply theme
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Auto-open content dropdown on matching route
   useEffect(() => {
     if (
       currentPath.startsWith("/create-post") ||
@@ -112,7 +104,7 @@ function Sidebar({ isOpen, setIsOpen }) {
   };
 
   const linkClass = (path) =>
-    `flex items-center gap-2 text-lg font-medium px-2 py-1 rounded-md transition-colors duration-200 ${
+    `flex items-center px-2 py-1 rounded-md transition-colors duration-200 ${
       currentPath === path
         ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
         : "text-gray-800 dark:text-white hover:text-blue-500"
@@ -133,62 +125,68 @@ function Sidebar({ isOpen, setIsOpen }) {
     >
       <nav className="space-y-4">
         <Link to="/" className={linkClass("/")}>
-          <MdDashboard size={iconSize} />
-          {isOpen && "Dashboard"}
+          <div className="flex items-center gap-3 pl-1">
+            <MdDashboard size={iconSize} />
+            {isOpen && <span>Dashboard</span>}
+          </div>
         </Link>
 
         <div>
           <button
             onClick={handleContentClick}
-            className={`flex items-center gap-2 text-lg font-medium w-full ${
-              activeDropdown === "content"
-                ? "text-blue-600 dark:text-blue-300"
-                : "text-gray-800 dark:text-white hover:text-blue-500"
-            }`}
+            className={`w-full ${linkClass("")}`}
           >
-            <MdContentPaste size={iconSize} />
-            {isOpen && "Content"}
+            <div className="flex items-center gap-3 pl-1">
+              <MdContentPaste size={iconSize} />
+              {isOpen && <span>Content</span>}
+            </div>
           </button>
 
           {isOpen && activeDropdown === "content" && (
             <div className="ml-8 mt-2 space-y-2 text-sm">
               <Link to="/create-post" className={dropdownLinkClass("/create-post")}>
-                <MdCreate size={iconSize} /> Create Post
+                <MdCreate size={iconSize} />
+                Create Post
               </Link>
               <Link to="/published" className={dropdownLinkClass("/published")}>
-                <MdPublish size={iconSize} /> Published Posts
+                <MdPublish size={iconSize} />
+                Published Posts
               </Link>
               <Link to="/scheduled-posts" className={dropdownLinkClass("/scheduled-posts")}>
-                <MdAccessTime size={iconSize} /> Scheduled
+                <MdAccessTime size={iconSize} />
+                Scheduled
               </Link>
               <Link to="/drafts" className={dropdownLinkClass("/drafts")}>
-                <MdOutlineDrafts size={iconSize} /> Drafts
+                <MdOutlineDrafts size={iconSize} />
+                Drafts
               </Link>
             </div>
           )}
         </div>
 
         <Link to="/engagement" className={linkClass("/engagement")}>
-          <MdPeople size={iconSize} />
-          {isOpen && "Engagement"}
+          <div className="flex items-center gap-3 pl-1">
+            <MdPeople size={iconSize} />
+            {isOpen && <span>Engagement</span>}
+          </div>
         </Link>
 
         <Link to="/analytics" className={linkClass("/analytics")}>
-          <MdBarChart size={iconSize} />
-          {isOpen && "Analytics"}
+          <div className="flex items-center gap-3 pl-1">
+            <MdBarChart size={iconSize} />
+            {isOpen && <span>Analytics</span>}
+          </div>
         </Link>
 
         <div className="relative">
           <button
             onClick={handleBrandClick}
-            className={`flex items-center justify-between gap-2 w-full text-lg font-medium text-left ${
-              isOpen
-                ? "text-gray-800 dark:text-white hover:text-blue-500"
-                : "justify-center"
-            }`}
+            className={`w-full ${linkClass("")}`}
           >
-            <MdSwitchAccount size={iconSize} />
-            {isOpen && <span className="flex-1 truncate">{selectedBrand}</span>}
+            <div className="flex items-center gap-3 pl-1">
+              <MdSwitchAccount size={iconSize} />
+              {isOpen && <span className="flex-1 truncate">{selectedBrand}</span>}
+            </div>
           </button>
 
           {isOpen && brandDropdownOpen && (
@@ -210,22 +208,27 @@ function Sidebar({ isOpen, setIsOpen }) {
           )}
         </div>
 
+        <Link to="/profile" className={linkClass("/profile")}>
+          <div className="flex items-center gap-3 pl-1">
+            <MdPerson size={iconSize} />
+            {isOpen && <span>Profile</span>}
+          </div>
+        </Link>
+
         <Link to="/settings" className={linkClass("/settings")}>
-          <MdSettings size={iconSize} />
-          {isOpen && "Settings"}
+          <div className="flex items-center gap-3 pl-1">
+            <MdSettings size={iconSize} />
+            {isOpen && <span>Settings</span>}
+          </div>
         </Link>
       </nav>
 
       <div className="mt-6">
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-2 text-lg font-medium text-gray-800 dark:text-white hover:text-blue-500"
+          className="flex items-center gap-3 pl-1 text-lg font-medium text-gray-800 dark:text-white hover:text-blue-500"
         >
-          {theme === "dark" ? (
-            <MdLightMode size={iconSize} />
-          ) : (
-            <MdDarkMode size={iconSize} />
-          )}
+          {theme === "dark" ? <MdLightMode size={iconSize} /> : <MdDarkMode size={iconSize} />}
           {isOpen && (theme === "dark" ? "Light Mode" : "Dark Mode")}
         </button>
       </div>
