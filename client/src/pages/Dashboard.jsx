@@ -1,401 +1,349 @@
+import React, { useEffect, useRef, useState } from "react";
+import Chart from "chart.js/auto";
 import {
-  MdSchedule,
-  MdEqualizer,
-  MdPublish,
-} from "react-icons/md";
-import {
+  FaUsers,
+  FaHeart,
+  FaClock,
+  FaEnvelope,
+  FaFacebookF,
   FaInstagram,
-  FaFacebook,
-  FaXTwitter,
-  FaTiktok,
-  FaYoutube,
-  FaThumbsUp,
-  FaCommentDots,
-} from "react-icons/fa6";
-import {
-  BarChart,
-  LineChart,
-  AreaChart,
-  Line,
-  Area,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { useState } from "react";
-
-const dashboardData = [
-  {
-    title: "Scheduled Posts",
-    value: 24,
-    icon: <MdSchedule size={30} />,
-    bg: "bg-blue-100 dark:bg-blue-900",
-    tooltip: "Posts planned to be published later",
-  },
-  {
-    title: "Engagement Rate",
-    value: "6.2%",
-    icon: <MdEqualizer size={30} />,
-    bg: "bg-green-100 dark:bg-green-900",
-    tooltip: "Percentage of users interacting with content",
-  },
-  {
-    title: "Published Posts",
-    value: 102,
-    icon: <MdPublish size={30} />,
-    bg: "bg-purple-100 dark:bg-purple-900",
-    tooltip: "Total posts already published",
-  },
-  {
-    title: "Impressions",
-    value: "12.4K",
-    icon: <MdEqualizer size={30} />,
-    bg: "bg-orange-100 dark:bg-orange-900",
-    tooltip: "Total views across all posts",
-  },
-];
-
-const platformIcons = {
-  Instagram: <FaInstagram className="text-pink-500" />,
-  Facebook: <FaFacebook className="text-blue-600" />,
-  X: <FaXTwitter className="text-black dark:text-white" />,
-  TikTok: <FaTiktok className="text-gray-800 dark:text-white" />,
-  YouTube: <FaYoutube className="text-red-600" />,
-  Overview: null,
-};
-
-const platforms = ["Overview", "Instagram", "Facebook", "X", "TikTok", "YouTube"];
-const chartTypes = ["Bar", "Line", "Area"];
-
-const chartDataByPlatform = {
-  Instagram: [
-    { day: "Mon", Reels: 2, Image: 1, Carousel: 1 },
-    { day: "Tue", Reels: 3, Image: 2, Carousel: 2 },
-    { day: "Wed", Reels: 1, Image: 1, Carousel: 1 },
-    { day: "Thu", Reels: 2, Image: 2, Carousel: 2 },
-    { day: "Fri", Reels: 1, Image: 2, Carousel: 2 },
-    { day: "Sat", Reels: 0, Image: 1, Carousel: 1 },
-    { day: "Sun", Reels: 1, Image: 1, Carousel: 0 },
-  ],
-  Facebook: [
-    { day: "Mon", Reels: 0, Image: 2, Carousel: 0 },
-    { day: "Tue", Reels: 1, Image: 2, Carousel: 1 },
-    { day: "Wed", Reels: 0, Image: 2, Carousel: 2 },
-    { day: "Thu", Reels: 1, Image: 1, Carousel: 1 },
-    { day: "Fri", Reels: 1, Image: 0, Carousel: 2 },
-    { day: "Sat", Reels: 0, Image: 1, Carousel: 0 },
-    { day: "Sun", Reels: 0, Image: 1, Carousel: 0 },
-  ],
-  X: [
-    { day: "Mon", Reels: 0, Image: 1, Carousel: 0 },
-    { day: "Tue", Reels: 0, Image: 2, Carousel: 0 },
-    { day: "Wed", Reels: 0, Image: 2, Carousel: 0 },
-    { day: "Thu", Reels: 0, Image: 2, Carousel: 1 },
-    { day: "Fri", Reels: 0, Image: 3, Carousel: 1 },
-    { day: "Sat", Reels: 0, Image: 1, Carousel: 0 },
-    { day: "Sun", Reels: 0, Image: 1, Carousel: 0 },
-  ],
-  TikTok: [
-    { day: "Mon", Reels: 1 },
-    { day: "Tue", Reels: 1 },
-    { day: "Wed", Reels: 2 },
-    { day: "Thu", Reels: 1 },
-    { day: "Fri", Reels: 1 },
-    { day: "Sat", Reels: 0 },
-    { day: "Sun", Reels: 1 },
-  ],
-  YouTube: [
-    { day: "Mon", Videos: 2, Shorts: 1, Posts: 1 },
-    { day: "Tue", Videos: 1, Shorts: 2, Posts: 0 },
-    { day: "Wed", Videos: 2, Shorts: 1, Posts: 1 },
-    { day: "Thu", Videos: 1, Shorts: 3, Posts: 0 },
-    { day: "Fri", Videos: 2, Shorts: 2, Posts: 2 },
-    { day: "Sat", Videos: 1, Shorts: 1, Posts: 0 },
-    { day: "Sun", Videos: 0, Shorts: 1, Posts: 1 },
-  ],
-};
-
-const generateOverviewData = () => {
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const keys = new Set();
-  Object.values(chartDataByPlatform).forEach((platformData) => {
-    platformData.forEach((d) => {
-      Object.keys(d).forEach((k) => {
-        if (k !== "day") keys.add(k);
-      });
-    });
-  });
-
-  return days.map((day) => {
-    const result = { day };
-    keys.forEach((key) => {
-      result[key] = 0;
-    });
-
-    Object.values(chartDataByPlatform).forEach((platformData) => {
-      const daily = platformData.find((d) => d.day === day);
-      if (daily) {
-        keys.forEach((key) => {
-          result[key] += daily[key] || 0;
-        });
-      }
-    });
-    return result;
-  });
-};
-
-const recentPosts = [
-  {
-    platform: "Instagram",
-    caption: "Just posted our latest reel 📸",
-    media: "https://via.placeholder.com/300x180?text=Instagram+Post",
-    date: "Today at 2:00PM",
-    likes: 120,
-    comments: 34,
-  },
-  {
-    platform: "Facebook",
-    caption: "Join us for a live Q&A session",
-    media: "",
-    date: "Yesterday at 5:30PM",
-    likes: 65,
-    comments: 12,
-  },
-  {
-    platform: "YouTube",
-    caption: "New short just dropped 🔥",
-    media: "https://via.placeholder.com/300x180?text=YouTube+Short",
-    date: "Today at 10:00AM",
-    likes: 240,
-    comments: 58,
-  },
-  {
-    platform: "X",
-    caption: "Did you catch our latest tweet?",
-    media: "",
-    date: "Sunday at 9:00AM",
-    likes: 44,
-    comments: 8,
-  },
-  {
-    platform: "TikTok",
-    caption: "Fun behind-the-scenes video 🎬",
-    media: "https://via.placeholder.com/300x180?text=TikTok+Clip",
-    date: "Saturday at 3:30PM",
-    likes: 130,
-    comments: 22,
-  },
-];
+  FaTwitter,
+  FaComment,
+  FaShare,
+} from "react-icons/fa";
 
 function Dashboard() {
-  const [selectedPlatform, setSelectedPlatform] = useState("Overview");
-  const [chartType, setChartType] = useState("Bar");
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 3;
+  const engagementChartRef = useRef(null);
+  const demographicsChartRef = useRef(null);
 
-  const chartData =
-    selectedPlatform === "Overview"
-      ? generateOverviewData()
-      : chartDataByPlatform[selectedPlatform] || [];
+  useEffect(() => {
+    if (engagementChartRef.current) {
+      const chart = new Chart(engagementChartRef.current, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+          datasets: [
+            {
+              label: "Likes",
+              data: [1200, 1900, 1700, 2100, 2300, 2500, 2800],
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99, 102, 241, 0.1)",
+              tension: 0.3,
+              fill: true,
+            },
+            {
+              label: "Comments",
+              data: [300, 500, 450, 600, 700, 650, 800],
+              borderColor: "#8b5cf6",
+              backgroundColor: "rgba(139, 92, 246, 0.1)",
+              tension: 0.3,
+              fill: true,
+            },
+          ],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
 
-  const allKeys = Object.keys(chartData[0] || {}).filter((k) => k !== "day");
-
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = recentPosts.slice(indexOfFirstPost, indexOfLastPost);
-
-  const paginate = (direction) => {
-    if (direction === "next" && indexOfLastPost < recentPosts.length) {
-      setCurrentPage((prev) => prev + 1);
-    } else if (direction === "prev" && currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
+      return () => chart.destroy();
     }
-  };
+  }, []);
 
-  const renderChart = () => {
-    if (chartType === "Bar") {
-      return (
-        <BarChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="day" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          {allKeys.map((key, i) => (
-            <Bar key={key} dataKey={key} stackId="a" fill={["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"][i % 5]} />
-          ))}
-        </BarChart>
-      );
+  useEffect(() => {
+    if (demographicsChartRef.current) {
+      const chart = new Chart(demographicsChartRef.current, {
+        type: "doughnut",
+        data: {
+          labels: ["18-24", "25-34", "35-44", "45-54", "55+"],
+          datasets: [
+            {
+              data: [15, 35, 25, 15, 10],
+              backgroundColor: [
+                "#6366f1",
+                "#8b5cf6",
+                "#a855f7",
+                "#d946ef",
+                "#ec4899",
+              ],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "right" } },
+        },
+      });
+
+      return () => chart.destroy();
     }
+  }, []);
 
-    if (chartType === "Line") {
-      return (
-        <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="day" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          {allKeys.map((key, i) => (
-            <Line key={key} type="monotone" dataKey={key} strokeWidth={2} stroke={["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"][i % 5]} />
-          ))}
-        </LineChart>
-      );
-    }
+  const metrics = [
+    {
+      title: "Total Followers",
+      value: "42,856",
+      change: "+3.2%",
+      icon: <FaUsers className="text-xl" />,
+      bg: "bg-indigo-100 text-indigo-600",
+    },
+    {
+      title: "Engagement Rate",
+      value: "6.8%",
+      change: "+1.4%",
+      icon: <FaHeart className="text-xl" />,
+      bg: "bg-purple-100 text-purple-600",
+    },
+    {
+      title: "Scheduled Posts",
+      value: "8",
+      change: "+2 active",
+      icon: <FaClock className="text-xl" />,
+      bg: "bg-blue-100 text-blue-600",
+    },
+    {
+      title: "New Messages",
+      value: "12",
+      change: "+3 unread",
+      icon: <FaEnvelope className="text-xl" />,
+      bg: "bg-green-100 text-green-600",
+    },
+  ];
 
-    if (chartType === "Area") {
-      return (
-        <AreaChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="day" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          {allKeys.map((key, i) => (
-            <Area key={key} type="monotone" dataKey={key} stroke={["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"][i % 5]} fillOpacity={0.3} fill={["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"][i % 5]} />
-          ))}
-        </AreaChart>
-      );
-    }
+  const postData = [
+    {
+      id: 1,
+      platform: ["Facebook", "Instagram"],
+      time: "2 hours ago",
+      text: "Check out our new product line! #NewArrivals #Fashion",
+      media: [
+        "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891",
+        "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3",
+      ],
+      likes: 245,
+      comments: 32,
+      shares: 18,
+    },
+    {
+      id: 2,
+      platform: ["Twitter"],
+      time: "5 hours ago",
+      text: "Join our webinar on social media trends for 2023.",
+      media: [],
+      likes: 189,
+      comments: 24,
+      shares: 12,
+    },
+    {
+      id: 3,
+      platform: ["Instagram"],
+      time: "1 day ago",
+      text: "Behind the scenes! 📸✨",
+      media: [
+        "https://images.unsplash.com/photo-1502767089025-6572583495b0",
+        "https://images.unsplash.com/photo-1535242208474-9a2793260b1f",
+      ],
+      likes: 312,
+      comments: 45,
+      shares: 28,
+    },
+  ];
 
-    return null;
-  };
+  const scheduleItems = [
+    {
+      title: "Product Launch Announcement",
+      platforms: "Instagram, Twitter",
+      time: "9:00 AM",
+      label: "Tomorrow",
+      color: "blue-500",
+    },
+    {
+      title: "Weekly Blog Post: Social Tips",
+      platforms: "Facebook, LinkedIn",
+      time: "11:30 AM",
+      label: "In 3 days",
+      color: "pink-500",
+    },
+    {
+      title: "Customer Success Story",
+      platforms: "Instagram, Facebook",
+      time: "2:00 PM",
+      label: "In 5 days",
+      color: "blue-400",
+    },
+    {
+      title: "Team Member Spotlight",
+      platforms: "LinkedIn",
+      time: "10:00 AM",
+      label: "Next Week",
+      color: "blue-700",
+    },
+  ];
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-6">Dashboard Overview</h2>
+    <div className="p-10 text-gray-800 dark:text-white">
+      <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {dashboardData.map((card, index) => (
-          <div
-            key={index}
-            className={`relative p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow ${card.bg} text-gray-900 dark:text-white`}
-            title={card.tooltip}
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-md">{card.icon}</div>
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        {metrics.map((item, i) => (
+          <div key={i} className="bg-white dark:bg-gray-800 p-6 shadow rounded-xl border border-gray-100">
+            <div className="flex justify-between items-center">
               <div>
-                <p className="text-sm font-medium">{card.title}</p>
-                <h3 className="text-xl font-bold">{card.value}</h3>
+                <p className="text-sm text-gray-500">{item.title}</p>
+                <p className="text-2xl font-bold">{item.value}</p>
+                <p className="text-sm text-green-500">{item.change}</p>
               </div>
+              <div className={`p-3 rounded-full ${item.bg}`}>{item.icon}</div>
             </div>
           </div>
         ))}
       </div>
 
-{/* Insights Section */}
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-  <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Top Performing Platform</p>
-    <h3 className="text-lg font-semibold flex items-center gap-2">
-      <FaInstagram className="text-pink-500" /> Instagram
-    </h3>
-    <p className="text-xs text-gray-400 mt-1">Most engagement this week</p>
-  </div>
-
-  <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Best Time to Post</p>
-    <h3 className="text-lg font-semibold">2:00 PM</h3>
-    <p className="text-xs text-gray-400 mt-1">Based on highest interaction rates</p>
-  </div>
-
-  <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Most Engaging Content Type</p>
-    <h3 className="text-lg font-semibold">Reels</h3>
-    <p className="text-xs text-gray-400 mt-1">Higher reach than images or carousels</p>
-  </div>
-
-  <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Weekly Engagement Growth</p>
-    <h3 className="text-lg font-semibold text-green-500">+12%</h3>
-    <p className="text-xs text-gray-400 mt-1">Compared to previous 7 days</p>
-  </div>
-</div>
-      {/* Filters */}
-      <div className="flex flex-wrap justify-between items-center mt-10 mb-4 gap-4">
-        <div className="space-x-2">
-          {platforms.map((platform) => (
-            <button
-              key={platform}
-              onClick={() => setSelectedPlatform(platform)}
-              className={`inline-flex items-center gap-2 px-3 py-1 text-sm rounded-full ${
-                selectedPlatform === platform
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-              }`}
-            >
-              {platformIcons[platform]} {platform}
-            </button>
-          ))}
-        </div>
-        <div className="space-x-2">
-          {chartTypes.map((type) => (
-            <button
-              key={type}
-              onClick={() => setChartType(type)}
-              className={`px-3 py-1 text-sm rounded-full ${
-                chartType === type
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-              }`}
-            >
-              {type}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Chart */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md mb-10">
-        <ResponsiveContainer width="100%" height={300}>{renderChart()}</ResponsiveContainer>
-      </div>
-
-      {/* Posts */}
-   <h2 className="text-xl font-semibold mb-4">Recent Posts</h2>
-{recentPosts.filter((post) => post.media).length === 0 ? (
-  <p className="text-gray-500 dark:text-gray-400 italic">
-    No recent posts with media available.
-  </p>
-) : (
-  <div className="overflow-x-auto">
-    <div className="flex gap-6 w-max pb-4">
-      {recentPosts
-        .filter((post) => post.media)
-        .map((post, index) => (
-          <div
-            key={index}
-            className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md w-80 flex-shrink-0"
-          >
-            <img
-              src={post.media}
-              alt="Post"
-              className="w-full h-48 object-cover rounded-lg mb-3"
-            />
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-1 flex items-center gap-2">
-              {platformIcons[post.platform]} {post.platform}
-            </p>
-            <p className="font-semibold mb-2">{post.caption}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-              {post.date}
-            </p>
-            <div className="flex gap-4 text-sm text-gray-700 dark:text-gray-300">
-              <span className="flex items-center gap-1">
-                <FaThumbsUp className="text-blue-500" /> {post.likes}
-              </span>
-              <span className="flex items-center gap-1">
-                <FaCommentDots className="text-green-500" /> {post.comments}
-              </span>
-            </div>
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow border border-gray-200">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold">Engagement Analytics</h3>
+            <select className="text-sm border rounded px-2 py-1">
+              <option>Last 7 days</option>
+              <option selected>Last 30 days</option>
+              <option>Last 90 days</option>
+            </select>
           </div>
-        ))}
+          <div className="h-72">
+            <canvas ref={engagementChartRef}></canvas>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow border border-gray-200">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold">Audience Demographics</h3>
+            <select className="text-sm border rounded px-2 py-1">
+              <option selected>Age</option>
+              <option>Gender</option>
+              <option>Location</option>
+            </select>
+          </div>
+          <div className="h-72">
+            <canvas ref={demographicsChartRef}></canvas>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Posts */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow border border-gray-200 mb-10">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold text-lg">Recent Posts</h3>
+          <button className="text-sm text-indigo-600 hover:text-indigo-800">View All</button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {postData.map((post) => {
+            const [mediaIndex, setMediaIndex] = useState(0);
+            const hasMultiple = post.media.length > 1;
+
+            return (
+              <div key={post.id} className="bg-white dark:bg-gray-800 border border-gray-200 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center mb-3">
+                  {post.platform.includes("Facebook") && (
+                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center mr-2">
+                      <FaFacebookF className="text-white text-sm" />
+                    </div>
+                  )}
+                  {post.platform.includes("Instagram") && (
+                    <div className="w-8 h-8 rounded-full bg-pink-600 flex items-center justify-center mr-2">
+                      <FaInstagram className="text-white text-sm" />
+                    </div>
+                  )}
+                  {post.platform.includes("Twitter") && (
+                    <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center mr-2">
+                      <FaTwitter className="text-white text-sm" />
+                    </div>
+                  )}
+                  <span className="font-medium">{post.platform.join(", ")}</span>
+                  <span className="ml-auto text-sm text-gray-500">{post.time}</span>
+                </div>
+
+                <p className="text-gray-700 mb-3 text-sm">{post.text}</p>
+
+                {post.media.length > 0 && (
+                  <div className="relative mb-3">
+                    <img
+                      src={post.media[mediaIndex]}
+                      alt="carousel"
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                    {hasMultiple && (
+                      <>
+                        <button
+                          onClick={() =>
+                            setMediaIndex((prev) =>
+                              prev === 0 ? post.media.length - 1 : prev - 1
+                            )
+                          }
+                          className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white/80 p-1 rounded-full"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          onClick={() =>
+                            setMediaIndex((prev) =>
+                              prev === post.media.length - 1 ? 0 : prev + 1
+                            )
+                          }
+                          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white/80 p-1 rounded-full"
+                        >
+                          ›
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex space-x-4 text-sm text-gray-600">
+                  <span className="flex items-center gap-1">
+                    <FaHeart className="text-red-500" /> {post.likes}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <FaComment className="text-blue-500" /> {post.comments}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <FaShare className="text-green-500" /> {post.shares}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Upcoming Schedule */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow border border-gray-200 mb-10">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold text-lg">Upcoming Schedule</h3>
+          <button className="text-sm text-indigo-600 hover:text-indigo-800">Add New</button>
+        </div>
+
+        <div className="space-y-4 text-sm">
+          {scheduleItems.map((item, i) => (
+            <div key={i} className={`border-l-4 border-${item.color} pl-4 py-2`}>
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-medium">{item.title}</p>
+                  <p className="text-gray-500">{item.platforms}</p>
+                </div>
+                <span className={`text-xs bg-${item.color}/10 text-${item.color} px-2 py-1 rounded-full`}>
+                  {item.label}
+                </span>
+              </div>
+              <p className="text-sm mt-1">{item.time}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
-  </div>
-)}
-    </div>
+    
   );
 }
 

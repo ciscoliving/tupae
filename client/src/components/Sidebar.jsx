@@ -104,14 +104,14 @@ function Sidebar({ isOpen, setIsOpen }) {
   };
 
   const linkClass = (path) =>
-    `flex items-center px-2 py-1 rounded-md transition-colors duration-200 ${
+    `group flex items-center px-2 py-2 rounded-md transition-all duration-300 ${
       currentPath === path
         ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
         : "text-gray-800 dark:text-white hover:text-blue-500"
     }`;
 
   const dropdownLinkClass = (path) =>
-    `flex items-center gap-2 px-2 py-1 rounded-md ${
+    `flex items-center gap-2 px-2 py-1 rounded-md transition-all duration-200 ${
       currentPath === path
         ? "text-blue-600 dark:text-blue-300"
         : "hover:text-blue-500 text-gray-600 dark:text-gray-300"
@@ -121,24 +121,35 @@ function Sidebar({ isOpen, setIsOpen }) {
     <aside
       className={`fixed top-16 left-0 z-10 ${
         isOpen ? "w-64" : "w-20"
-      } h-[calc(100vh-4rem)] bg-white dark:bg-gray-800 shadow-lg p-6 flex flex-col justify-between transition-all duration-300`}
+      } h-[calc(100vh-4rem)] bg-white dark:bg-gray-800 shadow-lg p-4 flex flex-col justify-between transition-all duration-500`}
     >
-      <nav className="space-y-4">
+      <nav className="space-y-2">
+        {/* Dashboard */}
         <Link to="/" className={linkClass("/")}>
-          <div className="flex items-center gap-3 pl-1">
+          <div className="flex items-center gap-3">
             <MdDashboard size={iconSize} />
-            {isOpen && <span>Dashboard</span>}
+            <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+            >
+
+              Dashboard
+            </span>
           </div>
         </Link>
 
+        {/* Content Dropdown */}
         <div>
           <button
             onClick={handleContentClick}
-            className={`w-full ${linkClass("")}`}
+            className={linkClass("/create-post")}
           >
-            <div className="flex items-center gap-3 pl-1">
+            <div className="flex items-center gap-3">
               <MdContentPaste size={iconSize} />
-              {isOpen && <span>Content</span>}
+            <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+            >
+                Content
+              </span>
             </div>
           </button>
 
@@ -164,28 +175,40 @@ function Sidebar({ isOpen, setIsOpen }) {
           )}
         </div>
 
+        {/* Engagement */}
         <Link to="/engagement" className={linkClass("/engagement")}>
-          <div className="flex items-center gap-3 pl-1">
+          <div className="flex items-center gap-3">
             <MdPeople size={iconSize} />
-            {isOpen && <span>Engagement</span>}
+            <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+            >
+              Engagement
+            </span>
           </div>
         </Link>
 
+        {/* Analytics */}
         <Link to="/analytics" className={linkClass("/analytics")}>
-          <div className="flex items-center gap-3 pl-1">
+          <div className="flex items-center gap-3">
             <MdBarChart size={iconSize} />
-            {isOpen && <span>Analytics</span>}
+            <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+            >
+              Analytics
+            </span>
           </div>
         </Link>
 
+        {/* Brand Selector */}
         <div className="relative">
-          <button
-            onClick={handleBrandClick}
-            className={`w-full ${linkClass("")}`}
-          >
-            <div className="flex items-center gap-3 pl-1">
+          <button onClick={handleBrandClick} className={linkClass("")}>
+            <div className="flex items-center gap-3">
               <MdSwitchAccount size={iconSize} />
-              {isOpen && <span className="flex-1 truncate">{selectedBrand}</span>}
+              <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+              >
+                {selectedBrand}
+              </span>
             </div>
           </button>
 
@@ -208,28 +231,43 @@ function Sidebar({ isOpen, setIsOpen }) {
           )}
         </div>
 
+        {/* Profile */}
         <Link to="/profile" className={linkClass("/profile")}>
-          <div className="flex items-center gap-3 pl-1">
+          <div className="flex items-center gap-3">
             <MdPerson size={iconSize} />
-            {isOpen && <span>Profile</span>}
+            <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+            >
+              Profile
+            </span>
           </div>
         </Link>
 
+        {/* Settings */}
         <Link to="/settings" className={linkClass("/settings")}>
-          <div className="flex items-center gap-3 pl-1">
+          <div className="flex items-center gap-3">
             <MdSettings size={iconSize} />
-            {isOpen && <span>Settings</span>}
+            <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+            >
+              Settings
+            </span>
           </div>
         </Link>
       </nav>
 
+      {/* Theme Toggle */}
       <div className="mt-6">
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-3 pl-1 text-lg font-medium text-gray-800 dark:text-white hover:text-blue-500"
+          className="flex items-center gap-3 text-lg font-medium text-gray-800 dark:text-white hover:text-blue-500"
         >
           {theme === "dark" ? <MdLightMode size={iconSize} /> : <MdDarkMode size={iconSize} />}
-          {isOpen && (theme === "dark" ? "Light Mode" : "Dark Mode")}
+          <span className={`transition-[opacity,width,margin] duration-500 delay-200 ease-in-out
+            ${isOpen ? "opacity-100 ml-2 w-auto" : "opacity-0 ml-0 w-0 overflow-hidden whitespace-nowrap"}`}
+          >
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </span>
         </button>
       </div>
     </aside>
