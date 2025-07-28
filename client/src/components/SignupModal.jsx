@@ -1,8 +1,10 @@
 // src/components/SignupModal.jsx
 import React, { useState } from "react";
 import { MdVisibility, MdVisibilityOff, MdClose } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 function SignupModal({ onClose }) {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -13,6 +15,29 @@ function SignupModal({ onClose }) {
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+
+  // Email validation
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // Password: 8+ chars, 1 capital, 1 number or special char
+  const isStrongPassword = (password) =>
+    /^(?=.*[A-Z])(?=.*[\d\W]).{8,}$/.test(password);
+
+  const getPasswordStrength = (password) => {
+    if (password.length < 8) return "Weak";
+    const hasUpper = /[A-Z]/.test(password);
+    const hasNumberOrSpecial = /[\d\W]/.test(password);
+    if (hasUpper && hasNumberOrSpecial) return "Strong";
+    if (hasUpper || hasNumberOrSpecial) return "Medium";
+    return "Weak";
+  };
+
+  const getStrengthColor = (strength) => {
+    if (strength === "Strong") return "text-green-600 dark:text-green-400";
+    if (strength === "Medium") return "text-yellow-600 dark:text-yellow-400";
+    return "text-red-600 dark:text-red-400";
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,24 +55,33 @@ function SignupModal({ onClose }) {
       return setError("All fields are required.");
     }
 
+    if (!isValidEmail(email)) {
+      return setError("Please enter a valid email address.");
+    }
+
+    if (!isStrongPassword(password)) {
+      return setError(
+        "Password must be at least 8 characters long, include 1 uppercase letter and 1 number or special character."
+      );
+    }
+
     if (password !== confirmPassword) {
       return setError("Passwords do not match.");
     }
 
     if (!agree) {
-      return setError("You must agree to the terms.");
+      return setError("You must agree to the terms and conditions.");
     }
 
-    // Simulate signup
-    console.log("User signed up:", form);
+    localStorage.setItem("authenticated", "true");
+    localStorage.setItem("rememberedEmail", email);
     alert("Account created successfully!");
-    onClose();
+    navigate("/");
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-xl w-full max-w-md relative">
-        {/* Close button */}
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
           onClick={onClose}
@@ -78,6 +112,8 @@ function SignupModal({ onClose }) {
             className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white"
             required
           />
+
+          {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -97,6 +133,7 @@ function SignupModal({ onClose }) {
             </button>
           </div>
 
+          {/* Confirm Password */}
           <input
             type={showPassword ? "text" : "password"}
             name="confirmPassword"
@@ -106,6 +143,17 @@ function SignupModal({ onClose }) {
             className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white"
             required
           />
+
+          {/* Password strength BELOW confirm password */}
+          {form.password && (
+            <p
+              className={`text-sm mt-1 font-medium ${getStrengthColor(
+                getPasswordStrength(form.password)
+              )}`}
+            >
+              Password Strength: {getPasswordStrength(form.password)}
+            </p>
+          )}
 
           <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <input
