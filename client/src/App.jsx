@@ -6,8 +6,6 @@ import AppRoutes from "./routes/Router";
 import { ThemeProvider } from "./ThemeContext";
 import LoginModal from "./components/LoginModal";
 import SignupModal from "./components/SignupModal";
-import ForgotPasswordModal from "./components/ForgotPasswordModal"; // Optional
-import LoginModalPage from "./pages/LoginModalPage";
 
 function AppContent() {
   const location = useLocation();
@@ -16,42 +14,47 @@ function AppContent() {
   const [isOpen, setIsOpen] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-
   useEffect(() => {
     const auth = localStorage.getItem("authenticated");
     if (auth === "true") {
       setIsAuthenticated(true);
-    } else {
-      setShowLogin(true);
     }
   }, []);
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
-    setShowLogin(false);
-    setShowSignup(false);
     navigate("/");
   };
 
   return (
     <>
       <Routes>
+        {/* Login route */}
         <Route
           path="/login"
           element={
             <div className="h-screen w-screen flex items-center justify-center bg-black/40 backdrop-blur-sm">
               <LoginModal
                 onLogin={handleLoginSuccess}
-                onSignupClick={() => {
-                  setShowSignup(true);
-                  navigate("/");
-                }}
+                onSignupClick={() => navigate("/signup")}
               />
             </div>
           }
         />
+
+        {/* Signup route with same blur */}
+        <Route
+          path="/signup"
+          element={
+            <div className="h-screen w-screen flex items-center justify-center bg-black/40 backdrop-blur-sm">
+              <SignupModal
+                onClose={() => navigate("/login")}
+              />
+            </div>
+          }
+        />
+
+        {/* All other routes */}
         <Route
           path="*"
           element={
@@ -63,13 +66,6 @@ function AppContent() {
           }
         />
       </Routes>
-
-      {/* Global Sign Up Modal */}
-      {showSignup && (
-        <SignupModal
-          onClose={() => setShowSignup(false)}
-        />
-      )}
     </>
   );
 }
