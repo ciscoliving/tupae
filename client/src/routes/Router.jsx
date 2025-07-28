@@ -9,6 +9,8 @@ import Engagement from "../features/engagement/Engagement";
 import Analytics from "../features/analytics/Analytics"
 import Settings from "../features/settings/Settings";
 import UserProfile from "../pages/UserProfile"; // import UserProfile page
+import Signup from "../pages/Signup"; // import Signup page
+import LoginModalPage from "../pages/LoginModalPage";
 // import other pages here...
 
 function AppRoutes() {
@@ -23,6 +25,8 @@ function AppRoutes() {
       <Route path="/analytics" element={<Analytics />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/profile" element={<UserProfile />} /> {/* Add UserProfile route */}
+      <Route path="/signup" element={<Signup />} /> {/* Add Signup route */}
+      <Route path="/login" element={<LoginModalPage />} /> {/* Add LoginModalPage route */}
       {/* Add other routes here */}
     </Routes>
   );
