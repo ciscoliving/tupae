@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Tupae</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #007bff, #00c6ff, #007bff, #00c6ff);
+      background-size: 600% 600%;
+      animation: gradientScroll 30s ease infinite;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+    header {
+      width: 100%;
+      padding: 20px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: transparent;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    nav a {
+      margin-left: 1.5rem;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a.btn {
+      background: rgba(255,255,255,0.1);
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .about-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 5% 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 3rem;
+    }
+
+    .about-text {
+      flex: 1 1 50%;
+      min-width: 300px;
+    }
+
+    .about-text h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #e6f3ff;
+    }
+
+    .about-visual {
+      flex: 1 1 40%;
+      min-width: 280px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.4s ease;
+    }
+
+    .about-visual:hover {
+      transform: translateY(-6px);
+    }
+
+    .about-visual h3 {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    .about-visual p {
+      color: #d9f2ff;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      padding: 3rem 5%;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    footer a {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    @keyframes gradientScroll {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @media (max-width: 768px) {
+      .about-wrapper {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+   <header>
+    <h1 class="logo">Tupae</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="features.html">Features</a>
+      <a href="signup.html" class="btn">Start Free</a>
+    </nav>
+  </header>
+
+  <!-- About Content -->
+  <section class="about-wrapper">
+    <div class="about-text">
+      <h1>Our Story</h1>
+      <p>
+        Tupae was built to empower African creators and businesses to thrive in the digital era. We’re on a mission to simplify social media management while making it more meaningful and localized.
+        <br /><br />
+        Our tools are designed with empathy, for real people and real challenges across the continent - whether you're a startup in Dar Es Salaam, a brand in Nairobi, or a creator in Kigali.
+      </p>
+    </div>
+    <div class="about-visual">
+      <h3>Why We Exist</h3>
+      <p>
+        To give African voices the tools they need to be louder, clearer, and more effective in a world that's more connected than ever.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Tupae. All rights reserved. | From Africa, With Love.</p>
+      <p>Questions? <a href="mailto:support@tupae.co">support@tupae.co</a></p>
+    </div>
+  </footer>
+
+  <style>
+    .site-footer {
+      background: transparent;
+      color: #ffffff;
+      text-align: center;
+      padding: 3rem 5%;
+    }
+    .site-footer a {
+      color: #ffffff;
+      text-decoration: color (#ffffff) ;
+    }
+    .site-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+</body>
+</html>

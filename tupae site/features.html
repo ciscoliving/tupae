@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tupae Features</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #007bff, #00c6ff, #007bff, #00c6ff);
+      background-size: 600% 600%;
+      animation: gradientScroll 30s ease infinite;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+    header {
+      width: 100%;
+      padding: 20px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: transparent;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    nav a {
+      margin-left: 1.5rem;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a.btn {
+      background: rgba(255,255,255,0.1);
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .features-container {
+      padding: 6rem 5%;
+      max-width: 1200px;
+      margin: auto;
+      text-align: center;
+    }
+    .features-container h1 {
+      font-size: 2.8rem;
+      margin-bottom: 2rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+    }
+    .feature-card h3 {
+      color: #ffffff;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+    .feature-card p {
+      color: #e6f3ff;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    footer {
+      padding: 3rem 5%;
+      text-align: center;
+      color: #ffffff;
+    }
+    footer a {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+    @keyframes gradientScroll {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1 class="logo">Tupae</h1>
+    <nav>
+     <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="features.html">Features</a>
+      <a href="signup.html" class="btn">Start Free</a>
+    </nav>
+  </header>
+
+  <!-- Features Content -->
+  <section class="features-container">
+    <h1>Everything You Need to Grow</h1>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>Smart Scheduling</h3>
+        <p>Plan content and post automatically at the best times using AI insights.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Unified Inbox</h3>
+        <p>Respond to all comments and DMs from one place, across all platforms.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Performance Analytics</h3>
+        <p>Track engagement, impressions, and follower growth in real time.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Multi-Platform Posting</h3>
+        <p>Publish across Facebook, Instagram, TikTok, X, YouTube, and LinkedIn.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Team Collaboration</h3>
+        <p>Invite teammates, assign roles, and manage brand content together.</p>
+      </div>
+      <div class="feature-card">
+        <h3>AI Content Assistant</h3>
+        <p>Generate engaging captions, hashtags, and creative ideas instantly.</p>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- CTA Section -->
+  <section style="text-align: center; padding: 4rem 5%; margin-top: 4rem;">
+    <h2 style="font-size: 2.4rem; margin-bottom: 1rem;">Ready to Get Started?</h2>
+    <p style="font-size: 1.1rem; color: #e6f3ff; margin-bottom: 2rem;">Join thousands of future-ready creators, entrepreneurs, and marketers who trust Tupae.</p>
+    <a href="signup.html" style="background: rgba(255,255,255,0.1); color: #ffffff; padding: 0.8rem 2rem; border-radius: 40px; font-weight: bold; text-decoration: none; font-size: 1.1rem;">Create Your Free Account</a>
+  </section>
+
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Tupae. All rights reserved. | From Africa, With Love.</p>
+      <p>Questions? <a href="mailto:support@tupae.co">support@tupae.co</a></p>
+    </div>
+  </footer>
+
+  <style>
+    .site-footer {
+      background: transparent;
+      color: #ffffff;
+      text-align: center;
+      padding: 3rem 5%;
+    }
+    .site-footer a {
+      color: #ffffff;
+      text-decoration: color (#ffffff) ;
+    }
+    .site-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+</body>
+</html>
