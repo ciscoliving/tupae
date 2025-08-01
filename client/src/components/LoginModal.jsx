@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 import SignupModal from "./SignupModal";
+import apiService from "../services/api";
 
 function LoginModal({ onLogin }) {
   const navigate = useNavigate();
@@ -26,22 +27,24 @@ function LoginModal({ onLogin }) {
     setLoading(true);
     setError("");
 
-    setTimeout(() => {
-      if (email === "admin@tupae.co" && password === "123456") {
-        if (rememberMe) {
-          localStorage.setItem("rememberedEmail", email);
-        } else {
-          localStorage.removeItem("rememberedEmail");
-        }
-
-        localStorage.setItem("authenticated", "true");
-        onLogin();
-        navigate("/");
+    try {
+      const response = await apiService.login(email, password);
+      
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
       } else {
-        setError("Invalid credentials. Use admin@tupae.co / 123456");
+        localStorage.removeItem("rememberedEmail");
       }
+
+      localStorage.setItem("authenticated", "true");
+      localStorage.setItem("user", JSON.stringify(response.user));
+      onLogin();
+      navigate("/");
+    } catch (error) {
+      setError(error.message || "Login failed. Please try again.");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -120,7 +123,7 @@ function LoginModal({ onLogin }) {
 
       {/* Demo info */}
       <p className="text-xs text-center text-gray-400 dark:text-gray-500 mt-6">
-        Use <b>admin@tupae.co</b> / <b>123456</b> to login
+        Create an account to get started
       </p>
 
       {/* Terms and Privacy */}

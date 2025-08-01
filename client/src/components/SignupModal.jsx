@@ -2,19 +2,23 @@
 import React, { useState } from "react";
 import { MdVisibility, MdVisibilityOff, MdClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import apiService from "../services/api";
 
 function SignupModal({ onClose }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
+    company: "",
     agree: false,
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Email validation
   const isValidEmail = (email) =>
@@ -47,12 +51,12 @@ function SignupModal({ onClose }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, confirmPassword, agree } = form;
+    const { firstName, lastName, email, password, confirmPassword, company, agree } = form;
 
-    if (!name || !email || !password || !confirmPassword) {
-      return setError("All fields are required.");
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      return setError("First name, last name, email, and password are required.");
     }
 
     if (!isValidEmail(email)) {
@@ -73,10 +77,31 @@ function SignupModal({ onClose }) {
       return setError("You must agree to the terms and conditions.");
     }
 
-    localStorage.setItem("authenticated", "true");
-    localStorage.setItem("rememberedEmail", email);
-    alert("Account created successfully!");
-    navigate("/");
+    setLoading(true);
+    setError("");
+
+    try {
+      const userData = {
+        firstName,
+        lastName,
+        email,
+        password,
+        company
+      };
+
+      const response = await apiService.register(userData);
+      
+      localStorage.setItem("authenticated", "true");
+      localStorage.setItem("rememberedEmail", email);
+      localStorage.setItem("user", JSON.stringify(response.user));
+      
+      alert("Account created successfully!");
+      navigate("/");
+    } catch (error) {
+      setError(error.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -94,14 +119,33 @@ function SignupModal({ onClose }) {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              type="text"
+              name="firstName"
+              placeholder="First Name"
+              value={form.firstName}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white"
+              required
+            />
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Last Name"
+              value={form.lastName}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white"
+              required
+            />
+          </div>
           <input
             type="text"
-            name="name"
-            placeholder="Full Name"
-            value={form.name}
+            name="company"
+            placeholder="Company (Optional)"
+            value={form.company}
             onChange={handleChange}
             className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white"
-            required
           />
           <input
             type="email"
@@ -187,9 +231,12 @@ function SignupModal({ onClose }) {
 
           <button
             type="submit"
-            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg"
+            disabled={loading}
+            className={`w-full py-3 ${
+              loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
+            } text-white font-semibold rounded-lg transition duration-300`}
           >
-            Create Account
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
 
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
